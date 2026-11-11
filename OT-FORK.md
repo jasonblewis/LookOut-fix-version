@@ -46,5 +46,11 @@ It differs from upstream in three ways:
 4. Commit and push, then create the GitHub release with the xpi, using the
    commands the script prints.
 
+To install by hand (first install, or after the add-on has vanished from the
+profile), download the xpi from the releases page with right-click, **Save
+Link As**: a plain click in Firefox tries to install it as a Firefox add-on.
+Then in Thunderbird go to **Add-ons**, click the gear icon, then **Install
+Add-on From File**.
+
 Thunderbird checks for add-on updates about once a day. To check at once, go
 to **Add-ons**, click the gear icon, then **Check for Updates**.
