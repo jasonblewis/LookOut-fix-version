@@ -611,6 +611,11 @@ function tnef_attr_read(instrm, prev_attr) {
     tnef_byte_pos += togo;
 
     if (attr.buf.length == attr.len) {
+      if (instrm.available() < 2) {
+        // Truncated file: keep the data, there is just no checksum to check.
+        tnef_log_msg("LookOut: TNEF attribute has no checksum, message may be truncated\n", 5);
+        return (attr);
+      }
       var checksum = GETINT16(instrm.readByteArray(2));
       tnef_byte_pos += 2;
       if (!tnef_attr_check_checksum(attr, checksum)) {
@@ -1619,6 +1624,10 @@ export function tnef_parse(instrm, msg_header, listener, _prefs) {
   pkg.msg_header = msg_header;
 
   // check that this is in fact a TNEF file
+  if (instrm.available() < 6) {
+    tnef_log_msg("Too short to be a TNEF file\n", 8);
+    return (null);
+  }
   sig = GETINT32(instrm.readByteArray(4));
   if (sig != TNEF_SIGNATURE) {
     tnef_log_msg("sig = " + sig + "\nSeems not to be a TNEF file\n", 8);
