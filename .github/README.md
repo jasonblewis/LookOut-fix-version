@@ -1,5 +1,10 @@
 # Self-hosted fork of LookOut (fix version)
 
+An updated version of LookOut I made with heavy AI assistance that:
+1. doesn't become outdated every 5 minutes
+2. will auto update in Thunderbird after first manually installing it.
+3. fixes a few bugs
+
 For what LookOut does and how to use it, see upstream's
 [README](https://github.com/jasonblewis/LookOut-fix-version/blob/ot/README.MD).
 This page covers only what is different about this fork.
