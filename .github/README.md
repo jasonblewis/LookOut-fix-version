@@ -1,5 +1,9 @@
 # Self-hosted fork of LookOut (fix version)
 
+For what LookOut does and how to use it, see upstream's
+[README](https://github.com/jasonblewis/LookOut-fix-version/blob/ot/README.MD).
+This page covers only what is different about this fork.
+
 This fork is installed from file and updates itself from this repository. The
 add-on is upstream's [LookOut (fix version)](https://github.com/TB-throwback/LookOut-fix-version)
 with the same add-on ID, so it replaces an installed copy and keeps its
