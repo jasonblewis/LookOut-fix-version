@@ -864,10 +864,16 @@ function decompress_rtf_data(src, len) {
   dest += rtf_prebuf;
 
   numout = rtf_prebuf_len;
-  while (numout < len + rtf_prebuf_len) {
+  // Stop when the input runs out, not only when the declared size is reached.
+  // The size comes from the message, so a tiny winmail.dat could otherwise
+  // declare gigabytes and make this loop pad with spaces until then. Bounding
+  // by the input also bounds the output to a few times the input size.
+  while (numout < len + rtf_prebuf_len && numin < src.length) {
     // each flag byte flags 8 literals/references, 1 per bit
     flags = ((flag_count++ % 8) == 0) ? src.charCodeAt(numin++) : (flags >> 1);
     if ((flags & 1) == 1) {	// 1 == reference
+      if (numin + 1 >= src.length)
+        break; // truncated reference
       var offset = src.charCodeAt(numin);
       var length = src.charCodeAt(numin + 1);
       numin += 2;
@@ -893,10 +899,9 @@ function decompress_rtf_data(src, len) {
         offset++;
       }
     } else {		// 0 == literal
-      if (numin < src.length)
-        dest += src.charAt(numin++);
-      else
-        dest += " ";
+      if (numin >= src.length)
+        break;
+      dest += src.charAt(numin++);
     }
     numout = dest.length;
   }
