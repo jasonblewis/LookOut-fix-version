@@ -10,10 +10,16 @@ For what LookOut does and how to use it, see upstream's
 This page covers only what is different about this fork.
 
 The add-on is upstream's [LookOut (fix version)](https://github.com/TB-throwback/LookOut-fix-version)
-with the same add-on ID, so it replaces an installed copy and keeps its
-settings.
+under its own add-on ID, `lookout-fork@jasonblewis.github.io`, and named
+"LookOut (fix version, fork)" in Thunderbird. With upstream's ID, Thunderbird
+showed upstream's addons.thunderbird.net listing (author, description,
+reviews) for it, so there was no way to tell the two apart.
 
-It differs from upstream in three ways:
+Because the ID differs, it does not replace upstream's add-on. **Remove
+LookOut (fix version) before installing the fork**: running both would decode
+every winmail.dat twice. Settings start from the defaults.
+
+It differs from upstream in these ways:
 
 - **No `strict_max_version`.** Upstream caps the add-on at the Thunderbird
   version it has tested and only follows ESR releases, so each monthly release
@@ -22,6 +28,7 @@ It differs from upstream in three ways:
 - **Auto-update.** `update_url` in `src/manifest.json` points at
   `updates.json` on this branch, which points at the xpi attached to the
   matching GitHub release.
+- **Own ID, name, author and homepage** (above).
 - **Bug fixes** that are not yet upstream, each on its own `fix/*` branch off
   `master` so it can be offered upstream as a separate pull request:
   - `fix/rtf-decompress-bound`: a 52-byte winmail.dat could hang the parser
@@ -47,8 +54,8 @@ It differs from upstream in three ways:
 ## Releasing
 
 1. Merge upstream or new fixes into `ot`.
-2. Raise `version` in `src/manifest.json` (keep it above every version
-   released so far, including upstream's).
+2. Raise `version` in `src/manifest.json` above every version released so
+   far.
 3. Run `./ot-release.sh`. It builds the xpi into `dist/` and rewrites
    `updates.json`.
 4. Commit and push, then create the GitHub release with the xpi, using the

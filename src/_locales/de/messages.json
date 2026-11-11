@@ -21,7 +21,7 @@
         "message": "LookOut öffnet die TNEF-codierten Mailanhänge (meistens winmail.dat) und lädt die decodierten Teile herunter."
     },
     "extensionName": {
-        "message": "Zeig's Mir! (LookOut)"
+        "message": "Zeig's Mir! (LookOut, fork)"
     },
     "extensions.lookout.attach_raw_mapi": {
         "message": "false"

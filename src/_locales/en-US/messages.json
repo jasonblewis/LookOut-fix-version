@@ -1,6 +1,6 @@
 {
     "extensionName": {
-        "message": "LookOut (fix version)"
+        "message": "LookOut (fix version, fork)"
     },
     "attach_raw_mapi_check.accesskey": {
         "message": "M"
@@ -21,7 +21,7 @@
         "message": "Enable Debugging"
     },
     "extensionDescription": {
-        "message": "LookOut reads and integrates TNEF encoded parts in emails."
+        "message": "LookOut reads and integrates TNEF encoded parts in emails. Self-hosted fork with auto-update and bug fixes."
     },
     "extensions.lookout.attach_raw_mapi": {
         "message": "false"

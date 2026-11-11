@@ -1,11 +1,11 @@
 {
   "addons": {
-    "lookout@s3_fix_version": {
+    "lookout-fork@jasonblewis.github.io": {
       "updates": [
         {
-          "version": "7.4.2.4",
-          "update_link": "https://github.com/jasonblewis/LookOut-fix-version/releases/download/v7.4.2.4/lookout-fix-version-7.4.2.4.xpi",
-          "update_hash": "sha256:26a686bd3a1d7c4f2364665bfa9c0418c747a311488ea7c0d620e30dc693c466",
+          "version": "7.4.2.5",
+          "update_link": "https://github.com/jasonblewis/LookOut-fix-version/releases/download/v7.4.2.5/lookout-fix-version-7.4.2.5.xpi",
+          "update_hash": "sha256:f2e38512bd5020a9e49167e7479ee048bf786877f4630e024e5c39d2678a5c17",
           "applications": {
             "gecko": {
               "strict_min_version": "140.0"

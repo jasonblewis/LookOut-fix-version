@@ -21,7 +21,7 @@
         "message": "LookOutはEメールに含まれるTNEFでエンコードされたデータを変換します。"
     },
     "extensionName": {
-        "message": "LookOut (fix version)"
+        "message": "LookOut (fix version, fork)"
     },
     "extensions.lookout.attach_raw_mapi": {
         "message": "false"
