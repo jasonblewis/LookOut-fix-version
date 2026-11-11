@@ -58,6 +58,21 @@ async function showMessageBody(tab, html) {
   }
 }
 
+/*
+ * Processing is asynchronous. If the user selects another message before we
+ * finish, the tab's message pane (and its attachment list) belongs to that
+ * other message, and changing it would show this message's attachments,
+ * body or invitation under the wrong message.
+ */
+async function isStillDisplayed(tab, message) {
+  try {
+    let displayed = await browser.messageDisplay.getDisplayedMessage(tab.id);
+    return displayed?.id == message.id;
+  } catch (error) {
+    return false;
+  }
+}
+
 async function handleMessage(tab, message) {
   if (message.junk || message.folder?.specialUse?.includes("junk")) {
       console.log(
@@ -87,6 +102,10 @@ async function handleMessage(tab, message) {
       prefs["strict_contenttype"]
     ) {
       continue;
+    }
+
+    if (!(await isStillDisplayed(tab, message))) {
+      return;
     }
 
     let file = await browser.Attachment.getAttachmentFile(
@@ -167,6 +186,10 @@ async function handleMessage(tab, message) {
   /*
    * Remove winmail.dat before adding the decoded attachments, as before.
    */
+  if (!(await isStillDisplayed(tab, message))) {
+    return;
+  }
+
   if (removedParts.length > 0) {
     await browser.Attachment.removeAttachments(tab.id, removedParts);
   }
@@ -174,7 +197,7 @@ async function handleMessage(tab, message) {
   /*
    * Add the decoded TNEF attachments.
    */
-  if (tnefAttachments.length > 0) {
+  if (tnefAttachments.length > 0 && (await isStillDisplayed(tab, message))) {
     await browser.Attachment.addAttachments(
       tab.id,
       tnefAttachments
@@ -185,7 +208,7 @@ async function handleMessage(tab, message) {
    * Replace the displayed message body if TNEF contained
    * body_part0.html.
    */
-   if (messageBody !== null) {
+   if (messageBody !== null && (await isStillDisplayed(tab, message))) {
     await showMessageBody(tab, messageBody);
   }
 
@@ -197,6 +220,9 @@ async function handleMessage(tab, message) {
    * never sees the calendar part hidden inside winmail.dat.
    */
   for (let invitation of calendarInvitations) {
+    if (!(await isStillDisplayed(tab, message))) {
+      return;
+    }
     try {
       await browser.Attachment.handleCalendarInvitation(
         tab.id,
