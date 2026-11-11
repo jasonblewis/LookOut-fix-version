@@ -22,7 +22,7 @@ class PseudoInputStream {
   }
 
   test(bytes) {
-    if (this.available < bytes) {
+    if (this.available() < bytes) {
       throw new Error("Trying to read beyond the end of the arrayBuffer");
     }
   }
