@@ -675,15 +675,31 @@ function guid_parse_buf(buf, idx) {
 }
 
 // parses out the MAPI attibutes hidden in the character buffer
+// Largest number of 4-byte-minimum items that can still fit in buf from idx.
+function max_items_left(buf, idx, count) {
+  var room = Math.max(0, Math.floor((buf.length - idx) / 4));
+  if (!(count >= 0)) // NaN from reading past the end
+    return 0;
+  return Math.min(count, room);
+}
+
 function mapi_attr_read(buf, len) {
   var idx = 0;
   var i = 0;
   var num_properties = GETINT32(buf, idx);
-  var mattrs = Array(num_properties + 1);
 
   idx += 4;
 
+  // Counts and lengths below come from the message. Never trust them beyond
+  // what the buffer can hold: every property, name and value takes at least
+  // 4 bytes, so a larger count means the data is corrupt or hostile, and
+  // looping over it would hang Thunderbird.
+  num_properties = max_items_left(buf, idx, num_properties);
+  var mattrs = Array(num_properties + 1);
+
   for (i = 0; i < num_properties; i++) {
+    if (idx + 4 > buf.length)
+      break;
     mattrs[i] = new MAPIAttr();
 
     mattrs[i].type = GETINT16(buf, idx);
@@ -703,6 +719,8 @@ function mapi_attr_read(buf, len) {
 
       mattrs[i].num_names = GETINT32(buf, idx);
       idx += 4;
+      if (mattrs[i].num_names > 0)
+        mattrs[i].num_names = max_items_left(buf, idx, mattrs[i].num_names);
       if (mattrs[i].num_names > 0) {
         // FIXME: do something useful here!
         var i2 = 0;
@@ -784,12 +802,15 @@ function mapi_attr_read(buf, len) {
       case MAPI_OBJECT:
       case MAPI_BINARY:       // variable length
       case MAPI_UNSPECIFIED:
-        mattrs[i].num_values = GETINT32(buf, idx);
+        mattrs[i].num_values = max_items_left(buf, idx + 4, GETINT32(buf, idx));
         idx += 4;
         mattrs[i].values = new Array(mattrs[i].num_values);
         for (var val_idx = 0; val_idx < mattrs[i].num_values; val_idx++) {
           var val_len = GETINT32(buf, idx);
           idx += 4;
+          // A value cannot be longer than the rest of the buffer.
+          if (!(val_len <= buf.length - idx))
+            val_len = Math.max(0, buf.length - idx);
 
           //if( mattrs[i].name == MAPI_STRING ) // name ?
           //  val_len--; // kill c style string terminator
